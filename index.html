@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF8F0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+<title>心晴计划 · 人格小测</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+    background:#FFF8F0;color:#3D3A36;line-height:1.7;
+    min-height:100vh;
+    background-image:radial-gradient(circle at 12% 8%,#FFE7CE 0,transparent 42%),
+                     radial-gradient(circle at 88% 92%,#FDECD9 0,transparent 38%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:28px 20px 56px}
+  .card{background:#fff;border-radius:22px;padding:26px 24px;box-shadow:0 8px 28px rgba(214,158,110,.13)}
+  h1{font-size:26px;line-height:1.4;margin:0 0 6px;letter-spacing:.5px}
+  .sub{color:#9C8E80;font-size:14px;margin:0 0 22px}
+  .lead{font-size:16px;color:#5A544D;margin:0 0 16px}
+  ul.tips{margin:0 0 26px;padding-left:20px;color:#6B635B;font-size:15px}
+  ul.tips li{margin:7px 0}
+  .btn{
+    display:block;width:100%;border:0;border-radius:16px;padding:15px 18px;
+    font-size:17px;font-family:inherit;font-weight:600;cursor:pointer;
+    background:#F0913F;color:#fff;transition:.18s;
+  }
+  .btn:hover{background:#E4812C}
+  .btn:active{transform:scale(.99)}
+  .btn.ghost{background:#FFF1E2;color:#C9741F;font-weight:500}
+  .btn.ghost:hover{background:#FFE7CE}
+  .row{display:flex;gap:12px;margin-top:14px}
+  .row .btn{margin:0}
+  /* 答题 */
+  .topbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#A2937F;margin-bottom:10px}
+  .bar{height:8px;background:#FFEBD6;border-radius:99px;overflow:hidden;margin-bottom:22px}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F6B675,#EB8B3C);border-radius:99px;transition:width .3s ease}
+  .qnum{font-size:13px;color:#C9741F;letter-spacing:1px;margin-bottom:8px}
+  .stem{font-size:19px;line-height:1.62;margin:0 0 20px;font-weight:600}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{
+    display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+    background:#FFFBF6;border:1.5px solid #F6E3CE;border-radius:15px;
+    padding:14px 15px;font-size:16px;font-family:inherit;color:#423D37;
+    cursor:pointer;transition:.15s;line-height:1.6;
+  }
+  .opt:hover{border-color:#F0B47A;background:#FFF5EA}
+  .opt.sel{border-color:#EB8B3C;background:#FFEFDD}
+  .opt b{
+    flex:0 0 24px;height:24px;border-radius:8px;background:#FFEBD6;color:#C9741F;
+    font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px
+  }
+  .opt.sel b{background:#EB8B3C;color:#fff}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:14px}
+  .link{color:#A2937F;background:none;border:0;font-family:inherit;font-size:14px;cursor:pointer;padding:6px 2px}
+  .link:hover{color:#C9741F}
+  /* 结果 */
+  .code{
+    font-size:56px;font-weight:800;letter-spacing:6px;color:#E4812C;margin:2px 0 4px;
+    font-family:"Segoe UI",system-ui,sans-serif
+  }
+  .desc{font-size:17px;color:#4C463F;margin:0 0 24px}
+  .dim{padding:15px 0;border-top:1px dashed #F2E2CE}
+  .dim:first-of-type{border-top:0}
+  .dim h3{margin:0 0 9px;font-size:15px;font-weight:600;display:flex;justify-content:space-between;color:#4C463F}
+  .dim h3 span{color:#C9741F;font-weight:700}
+  .track{height:9px;background:#FFEBD6;border-radius:99px;display:flex;overflow:hidden}
+  .track i{display:block;height:100%}
+  .track .l{background:linear-gradient(90deg,#F3A85C,#EA8C3D)}
+  .track .r{background:#F7DCC2}
+  .dim p{margin:9px 0 0;font-size:14px;color:#7A7168;line-height:1.75}
+  .foot{text-align:center;font-size:12px;color:#B4A79A;margin-top:26px;line-height:1.8}
+  .hide{display:none!important}
+  @media (max-width:420px){
+    .wrap{padding:20px 14px 44px}
+    .card{padding:22px 18px;border-radius:18px}
+    h1{font-size:23px}
+    .stem{font-size:17.5px}
+    .code{font-size:48px}
+  }
+</style>
+<style>
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{overscroll-behavior-y:contain;padding-bottom:env(safe-area-inset-bottom)}
+  .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .opt{min-height:56px;touch-action:manipulation}
+  .btn{min-height:52px;touch-action:manipulation}
+  .link{min-height:40px;padding:10px 4px}
+  @media (hover:none){.opt:hover{border-color:#F6E3CE;background:#FFFBF6}}
+  @media (max-width:400px){
+    h1{font-size:22px}
+    .stem{font-size:17px}
+    .opt{font-size:15.5px;padding:13px 14px}
+    .code{font-size:46px;letter-spacing:4px}
+    .dim h3{font-size:14px}
+    .dim h3 span{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 开始页 -->
+  <section id="s-intro" class="card">
+    <h1>心晴计划 · 人格小测</h1>
+    <p class="sub">96 题 · 大约十几分钟 · 不需要登录</p>
+    <p class="lead">每题选一个最接近你的答案。第一反应通常更准，没有对错，也不用挑“应该选的那个”。</p>
+    <ul class="tips">
+      <li>答案只存在你自己的浏览器里，不会上传，也没有账号。</li>
+      <li>中途关了页面也没关系，下次打开可以从上次那题接着做。</li>
+      <li>结果只是给你一个看自己的角度，不用当成标签贴在自己身上。</li>
+    </ul>
+    <button class="btn" id="btn-start">开始作答</button>
+    <div class="row hide" id="resume-row">
+      <button class="btn ghost" id="btn-resume">继续上次（第 <span id="resume-n">1</span> 题）</button>
+      <button class="btn ghost" id="btn-reset">重新开始</button>
+    </div>
+  </section>
+
+  <!-- 答题页 -->
+  <section id="s-quiz" class="card hide">
+    <div class="topbar">
+      <span id="pos">第 1 题 / 共 96 题</span>
+      <span id="pct">0%</span>
+    </div>
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="qnum" id="qnum">01</div>
+    <p class="stem" id="stem"></p>
+    <div class="opts" id="opts"></div>
+    <div class="nav">
+      <button class="link" id="btn-prev">← 上一题</button>
+      <button class="link" id="btn-quit">退出</button>
+    </div>
+  </section>
+
+  <!-- 结果页 -->
+  <section id="s-result" class="card hide">
+    <p class="sub" style="margin-bottom:6px">你的人格类型是</p>
+    <div class="code" id="code">INFP</div>
+    <p class="desc" id="desc"></p>
+    <div id="dims"></div>
+    <div class="row">
+      <button class="btn ghost" id="btn-again">重新测一次</button>
+      <button class="btn" id="btn-save">保存结果文件</button>
+    </div>
+    <p class="foot">本测试仅作自我观察的参考，不构成心理诊断。<br>心晴计划 · 答案不上传、不收集</p>
+  </section>
+
+</div>
+
+<script>
+var DATA = {"questions":[{"n":1,"q":"去社区做志愿，到了集合点发现大家已经分组聊起来了。","o":["找个空位插进去，问问他们在聊什么","站旁边听，有人搭话就接上","先去帮组织者搬东西","找个角落坐下等开始"],"s":[2,1,-1,-2]},{"n":2,"q":"①一到新环境，我先找人说话　②一到新环境，我先看一会儿","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":3,"q":"换座位后，新同桌一整天没跟你说过话。","o":["找个机会递个东西，顺便说两句","我先开口，问他周末打不打球","等他先开口，我也不急","一天不说话也挺好"],"s":[1,2,-1,-2]},{"n":4,"q":"课上有想法，我会当场说出来。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":5,"q":"课间十分钟，教室里挺吵，你一般在。","o":["跟熟的一两个人聊","趴桌上闭眼，耳朵听着","扎进人最多那一堆","看书或手机，自己待着"],"s":[1,-1,2,-2]},{"n":6,"q":"下面四个说法，哪个最像平时的你？","o":["看场合，熟人多我就放得开","人多的时候我话会变少","人一多我就累，只想撤","人一多我就来劲，越聊越有精神"],"s":[1,-1,-2,2]},{"n":7,"q":"小组要上台展示，你被推到前面讲。","o":["上去就放开了，还能跟台下搭上话","一开始紧，讲着讲着就顺了","尽快讲完，赶紧下来","最好别人多讲，我少开口"],"s":[2,1,-1,-2]},{"n":8,"q":"①热闹的活动我半小时就想撤　②热闹的活动我能从头待到尾","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":9,"q":"连着两天没出门，也没跟人聊天，周一你的感觉是。","o":["有点想找人聊，正好上学","憋坏了，见谁都想多说两句","没什么特别感觉","这两天挺舒服，还有点不想开学"],"s":[1,2,-1,-2]},{"n":10,"q":"一个人待着比跟人在一起轻松。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":11,"q":"班里要选一个人去别的班交流，得是能说会道的。","o":["有人问我，我可以去","心里想过，但没举手","主动报名，这种场合我挺喜欢","谁爱去谁去，别找我"],"s":[1,-1,2,-2]},{"n":12,"q":"①心里有事我习惯说出来　②心里有事我习惯自己消化","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":13,"q":"①周末我更想自己在家　②周末我更想约人出去","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":14,"q":"下课我会主动找人搭话。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":15,"q":"下面四个说法，哪个最不像平时的你？","o":["话不多，熟的人才聊得开","大多数时候愿意先开口","有话当场就说","基本不主动开口"],"s":[1,-1,-2,2]},{"n":16,"q":"食堂排队，前面站着不太熟的同班同学。","o":["拍他一下，正好一起排","打个招呼，然后各自排","低头看手机，装没看见","慢两步，换个窗口排"],"s":[2,1,-1,-2]},{"n":17,"q":"①有事我直接找人当面说　②有事我宁愿发消息","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":18,"q":"活动要打电话通知十几个同学，组长问谁来做。","o":["我先发消息，再补电话","我来，打电话比发消息快","我一个一个发微信","让我打，我会拖到最后"],"s":[1,2,-1,-2]},{"n":19,"q":"班级群因为一件小事吵起来了。","o":["发个表情或玩笑缓和一下","看大家怎么说，先不吭声","我跳出来说两句，把气氛拉回来","直接设消息免打扰"],"s":[1,-1,2,-2]},{"n":20,"q":"群里讨论我先潜水，等别人说完再说。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":21,"q":"一个人坐奶茶店，隔壁桌坐着认识的同学。","o":["等他们看见我再说","把手机拿出来挡一下","喝完就走，别碰上","招呼他们过来一起坐"],"s":[1,-1,-2,2]},{"n":22,"q":"①轮到我发言，我只讲准备过的　②轮到我发言，我讲得比准备的多","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":23,"q":"聚会我能一直聊到散场。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":24,"q":"①认识的人我大多叫得出名字　②认识的人熟的只有那几个","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":25,"q":"老师留了一篇作文，题目是“如果有一天……”。","o":["先列个提纲，再往里填","找一篇范文，照着结构写","想到什么写什么，边写边改","就写自己最近一直在想的那件事"],"s":[1,2,-1,-2]},{"n":26,"q":"①我喜欢先把大概想清楚　②我喜欢先动手做起来","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":27,"q":"看完一部电影，同学问你觉得怎么样。","o":["我说哪几场最好看","我说整体的感觉","我按顺序把剧情讲一遍","我聊它到底想说什么"],"s":[1,-1,2,-2]},{"n":28,"q":"我更喜欢按已经试过的办法做事。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":29,"q":"小组讨论，有人提了个很奇怪的新方案。","o":["我觉得现在这个再改改就行","我顺着往下想，能接出好几个","我从这个话题想到别的方向去了","我先问预算和人手够不够"],"s":[1,-1,-2,2]},{"n":30,"q":"下面四个说法，哪个最像平时的你？","o":["我喜欢照着做过的方法来","我大体按经验来，偶尔改改","我常想点新花样","我做事喜欢跟别人不一样"],"s":[2,1,-1,-2]},{"n":31,"q":"上课老师讲了一个理论。","o":["我记下最关键那句","我把板书抄全","我在想它能解释生活里什么事","我想到一些跟这节课没关系的事"],"s":[1,2,-1,-2]},{"n":32,"q":"①我做事比较专注在手头　②我容易走神想到别处","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":33,"q":"走路的时候，你脑子里通常在。","o":["把最近要做的事过一遍","想些没边的事","看路，顺带想今天还有什么没干完","想以后的自己会是什么样"],"s":[1,-1,2,-2]},{"n":34,"q":"我会把看到的东西跟别的事联系起来。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":35,"q":"班里要做块展板，主题是“我们的三年”。","o":["我先列出要做几块内容","我先想一个有感觉的主题句","我想做成别人没见过的样子","我先量尺寸、算材料"],"s":[1,-1,-2,2]},{"n":36,"q":"①我喜欢聊“为什么”　②我喜欢聊“怎么做”","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":37,"q":"①别人说我实在　②别人说我脑洞大","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":38,"q":"别人讲事情，我更关心具体发生了什么。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":39,"q":"下面四个说法，哪个最不像平时的你？","o":["我脑子里老是各种假设","我常常想些没边的事","我大多时候按已知的来","我做事先看具体条件"],"s":[2,1,-1,-2]},{"n":40,"q":"朋友跟你讲他遇到的一件怪事。","o":["我追问几个细节","我让他按时间顺序讲清楚","我猜背后可能是什么原因","我一下想到好几种可能"],"s":[1,2,-1,-2]},{"n":41,"q":"①我常常想以后的事　②我更多想眼前的事","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":42,"q":"一道数学题卡住了。","o":["我找找有没有做过的类似题","我换个思路试试","我把已知条件再抄一遍","我先放着，脑子里冒出别的解法"],"s":[1,-1,2,-2]},{"n":43,"q":"班会要定一个主题。","o":["我在别人提的上面改一改","我提一个大家没想过的","我想做点不一样的形式","我提以前办过、效果不错的"],"s":[1,-1,-2,2]},{"n":44,"q":"我会突然想到一些跟眼前没关系的事。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":45,"q":"收拾书包翻出一张旧纸条，上面写了一句话。","o":["我看看字迹是谁的","我读一遍就夹回去","我会想当时为什么写这一句","我顺着想起那阵子的很多事"],"s":[2,1,-1,-2]},{"n":46,"q":"①我记东西靠多重复几遍　②我记东西靠弄懂里面的道理","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":47,"q":"我常常会推想事情接下来可能怎么发展。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":48,"q":"①我喜欢没试过的新做法　②我喜欢熟了的那一套","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":49,"q":"小组作业有人一直没交他那部分，明天就到截止。","o":["我提醒一句，问他什么情况","我先问他是不是最近遇到事","我说清哪块没交、几点前给我","算了，我帮他做完，别弄僵"],"s":[1,-1,2,-2]},{"n":50,"q":"①做决定我先看哪个更合理　②做决定我先看大家能不能接受","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":51,"q":"朋友跟你抱怨他爸妈管得太严。","o":["我说一句“确实挺烦人”","我先听他说完，不评价","我陪着，等他自己缓过来","我帮他理一理，看哪条规定说不通"],"s":[1,-1,-2,2]},{"n":52,"q":"说真话会得罪人，我也还是会说。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":53,"q":"班委定了个规则，你觉得不太合理。","o":["我在会上直接说哪里不合理","我会后私下跟班委提","心里觉得不对，但不说","大家都能接受，那我也接受"],"s":[2,1,-1,-2]},{"n":54,"q":"下面四个说法，哪个最像平时的你？","o":["我大多时候讲道理，也会留点面子","我说话做事先看讲不讲得通","我常常先顾着别人的感受","我最怕把气氛弄僵"],"s":[1,2,-1,-2]},{"n":55,"q":"两个同学因为值日吵起来了。","o":["我先劝两人都少说两句","我先拉着情绪最激动的那个","我听清两人的说法，谁的问题谁认","我躲开，这种事不好掺和"],"s":[1,-1,2,-2]},{"n":56,"q":"①朋友有事，我先陪他难受一会儿　②朋友有事，我先帮他想办法","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":57,"q":"有人当面说你刚才那句话说得不对。","o":["我解释一下我的意思","心里有点不舒服，没接话","我会觉得他是不是对我有意见","我先想他说的有没有道理"],"s":[1,-1,-2,2]},{"n":58,"q":"别人难过的时候，我会先放下手里的事去陪他。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":59,"q":"老师让你评价同桌的作业。","o":["我按标准说哪几处不达标","我先说做得好的，再提一处","我挑好听的说","我说“挺好的”，具体不讲了"],"s":[2,1,-1,-2]},{"n":60,"q":"①别人说我说话直接　②别人说我说话留余地","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":61,"q":"①我更在意大家心里舒不舒服　②我更在意事情有没有做对","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":62,"q":"我更在意事情讲不讲得通，而不是谁高不高兴。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":63,"q":"下面四个说法，哪个最不像平时的你？","o":["我很在意别人高不高兴","别人一难过，我什么也干不下去","我说话比较直","我评价一件事主要看结果"],"s":[1,2,-1,-2]},{"n":64,"q":"选班服，两个方案票数差不多。","o":["我说我选哪个，给两条理由","我看哪边人多就选哪边","我列一下价格、颜色、耐穿的对比","我随大家，别为这个吵"],"s":[1,-1,2,-2]},{"n":65,"q":"①讨论时我先讲事实　②讨论时我先讲感受","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":66,"q":"有同学在群里发了一个你不认同的说法。","o":["我会私下跟朋友吐槽两句","我看看有没有人反驳","怕伤和气，我滑过去","我会直接说出我的看法"],"s":[1,-1,-2,2]},{"n":67,"q":"朋友做了一个你觉得不太靠谱的决定。","o":["我把风险一条条讲给他","我说我的担心，让他自己定","我不太敢说，怕他不高兴","他想做就做，我不说"],"s":[2,1,-1,-2]},{"n":68,"q":"做决定前我会想想会不会让谁难受。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":69,"q":"比赛输了，复盘的时候。","o":["我说大家都尽力了，再说问题","我先看哪几个环节出了问题","我先安慰情绪低的人","我不想复盘，过去就过去了"],"s":[1,2,-1,-2]},{"n":70,"q":"①我看出发点评价一件事　②我看结果评价一件事","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":71,"q":"别人情绪一激动，我先想怎么把事解决。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":72,"q":"①我不太容易被别人的情绪带着走　②我很容易被别人的情绪带着走","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":73,"q":"周六班上约好下午三点集合去爬山，前一晚你在。","o":["大概想一下带什么，别的明天再说","什么也不准备，明早随手抓","没准备，反正到时候再说","东西收好，连几点起都算好了"],"s":[1,-1,-2,2]},{"n":74,"q":"①我喜欢留点余地，到时候再说　②我喜欢事情早点定下来","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":75,"q":"老师布置了一篇两周后交的作业。","o":["我当周就列好计划，分几次做完","我先把框架搭起来，后面再填","我先记下来，想起来再写","快到截止才开始"],"s":[2,1,-1,-2]},{"n":76,"q":"我做事前会先安排好顺序。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":77,"q":"朋友约你周末出去玩，还没定去哪。","o":["我先定个大概范围，再一起挑","我马上把时间地点定下来","到时候看心情，随便走走","出发前十分钟再决定也行"],"s":[1,2,-1,-2]},{"n":78,"q":"下面四个说法，哪个最像平时的你？","o":["大体有安排，细节随意","我更喜欢临时决定","什么事都喜欢提前安排好","计划一多我就烦"],"s":[1,-1,2,-2]},{"n":79,"q":"你的书桌通常是。","o":["常用的放一起，别的堆着","看着乱，但我知道东西在哪","找东西全靠翻","东西各在各的位置"],"s":[1,-1,-2,2]},{"n":80,"q":"①我出门前会想好路线　②我出门了再找路","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":81,"q":"老师说明天课上要临时改讲别的。","o":["我有点烦，本来安排好了","我问清楚改到哪，好重新排","改就改吧，跟着走","挺好，正好换个花样"],"s":[2,1,-1,-2]},{"n":82,"q":"我经常临时改主意。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":83,"q":"小组作业定了分工，做到一半有人想换做法。","o":["我先问清楚为什么要换","我希望能按原来的分工做完","换也行，重新分一下","边做边改，不用非得定死"],"s":[1,2,-1,-2]},{"n":84,"q":"①我喜欢做一会儿歇一会儿　②我做事喜欢一次做完","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":85,"q":"①我喜欢有明确的分工　②分工不清反而自在","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":86,"q":"答应别人的事我会记在手机里。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":87,"q":"下面四个说法，哪个最不像平时的你？","o":["我常常临时改","我大多时候会先计划","我基本不做计划","我做事喜欢按步骤来"],"s":[1,-1,2,-2]},{"n":88,"q":"出门旅行前。","o":["我定好住的地方和来回的车","只定来回，中间随意","走到哪儿算哪儿","我列清单，按天排好行程"],"s":[1,-1,-2,2]},{"n":89,"q":"①我很少列清单　②我常常列清单","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]},{"n":90,"q":"你有一整个月的零花钱。","o":["我大概分好哪部分花在哪","我留一部分，剩下的随便花","花了再说，不够就少花","想买什么就买什么"],"s":[2,1,-1,-2]},{"n":91,"q":"朋友问你下周有没有空。","o":["我说个大概，确认了再定","我先看日历，再回他","我说“看到时候吧”","我一般不定那么早"],"s":[1,2,-1,-2]},{"n":92,"q":"东西放在哪，我常常想不起来。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[2,1,-1,-2]},{"n":93,"q":"一件做了很久的事，还差一点没完成。","o":["我尽量当天收个尾","放着也行，过两天再说","不做完我心里不舒服","常常就这么放着了"],"s":[1,-1,2,-2]},{"n":94,"q":"①计划被打乱我会不太舒服　②计划变了我也觉得行","o":["完全像①","有点像①","有点像②","完全像②"],"s":[2,1,-1,-2]},{"n":95,"q":"事情没做完，我心里会一直挂着。","o":["几乎总是","经常","偶尔","几乎不会"],"s":[-2,-1,1,2]},{"n":96,"q":"①我逛到哪买到哪　②我买东西先想好买什么","o":["完全像①","有点像①","有点像②","完全像②"],"s":[-2,-1,1,2]}],"types":{"ISTJ":"答应的事心里记着，按规矩一步步做完；临时变卦会让你不太舒服。","ISFJ":"记得住别人随口提过的小事，愿意默默把场面照顾好。","INFJ":"心里有一套自己的想法，也很在意身边人的情绪。","INTJ":"先在脑子里把事情推演清楚，不喜欢思路被人打断。","ISTP":"遇到问题先动手试试，话不多，但手很稳。","ISFP":"对喜欢的东西有很细的感受，不爱被人催着做决定。","INFP":"心里有个很软的地方，也有自己不肯让步的东西。","INTP":"喜欢把事情想明白，一想就忘了时间，不太爱管流程。","ESTP":"反应快，敢试；场面一乱反而来劲。","ESFP":"走到哪儿都能把气氛带起来，喜欢当下的热闹。","ENFP":"想法多，容易被新东西吸引，跟谁都聊得开。","ENTP":"喜欢抬杠式地想问题，越辩越有兴趣。","ESTJ":"习惯把事情安排明白，谁该干什么说得很清。","ESFJ":"记得每个人的状态，很会照顾场上的气氛。","ENFJ":"会带人，也能看见谁在角落里不太说话。","ENTJ":"定下目标就往前推，喜欢把人和事都拢起来。"}};
+var KEY = "xq_mbti_v1";
+var DIMS = [
+  {a:"E", b:"I", name:"精力来源", ea:"你更容易从与人相处里回血，聊起来会更有精神。", eb:"你更需要独处来恢复，人多的场合容易消耗你。"},
+  {a:"S", b:"N", name:"接收信息", ea:"你更信具体的经验和看得见的事实，习惯先把眼前的事弄明白。", eb:"你更容易被可能性吸引，会顺着一个点想到很远的地方。"},
+  {a:"T", b:"F", name:"做决定", ea:"你判断时先看是否说得通、是否站得住。", eb:"你判断时先想这件事对人意味着什么，会不会让人难受。"},
+  {a:"J", b:"P", name:"生活节奏", ea:"你倾向于早点把事情定下来，定好了心里才踏实。", eb:"你更愿意留点余地，事情到跟前再定反而更自在。"}
+];
+
+var Q = DATA.questions, T = DATA.types;
+var answers = new Array(Q.length).fill(-1);
+var cur = 0, picking = false;
+
+var $ = function(id){ return document.getElementById(id); };
+var intro = $("s-intro"), quiz = $("s-quiz"), res = $("s-result");
+
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify({a:answers, c:cur})); }catch(e){}
+}
+function load(){
+  try{
+    var s = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(s && s.a && s.a.length === Q.length){
+      answers = s.a; cur = Math.min(s.c || 0, Q.length - 1);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+function clear(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+function show(el){
+  [intro, quiz, res].forEach(function(x){ x.classList.add("hide"); });
+  el.classList.remove("hide");
+  window.scrollTo(0, 0);
+}
+
+function answeredCount(){
+  var n = 0;
+  for(var i = 0; i < answers.length; i++){ if(answers[i] >= 0) n++; }
+  return n;
+}
+
+function render(){
+  var q = Q[cur];
+  $("pos").textContent = "第 " + (cur + 1) + " 题 / 共 " + Q.length + " 题";
+  var p = Math.round(answeredCount() / Q.length * 100);
+  $("pct").textContent = p + "%";
+  $("barfill").style.width = p + "%";
+  $("qnum").textContent = (cur + 1 < 10 ? "0" : "") + (cur + 1);
+  $("stem").textContent = q.q;
+  var box = $("opts");
+  box.innerHTML = "";
+  ["A","B","C","D"].forEach(function(letter, i){
+    var b = document.createElement("button");
+    b.className = "opt" + (answers[cur] === i ? " sel" : "");
+    b.innerHTML = '<b>' + letter + '</b><span></span>';
+    b.lastChild.textContent = q.o[i];
+    b.onclick = function(){ pick(i); };
+    box.appendChild(b);
+  });
+  $("btn-prev").style.visibility = cur === 0 ? "hidden" : "visible";
+}
+
+function pick(i){
+  if(picking) return;
+  picking = true;
+  answers[cur] = i;
+  save();
+  render();
+  setTimeout(function(){
+    picking = false;
+    if(answeredCount() === Q.length && cur === Q.length - 1){ finish(); return; }
+    if(cur < Q.length - 1){ cur++; save(); render(); }
+    else { finish(); }
+  }, 170);
+}
+
+function nextOpen(){
+  for(var i = 0; i < Q.length; i++){ if(answers[i] < 0) return i; }
+  return Q.length - 1;
+}
+
+function finish(){
+  var totals = [0,0,0,0];
+  for(var i = 0; i < Q.length; i++){
+    var g = Math.floor(i / 24);
+    totals[g] += Q[i].s[answers[i]];
+  }
+  var code = "";
+  var html = "";
+  DIMS.forEach(function(d, g){
+    var sc = totals[g];
+    var first = sc >= 0;
+    var codeLetter = first ? d.a : d.b;
+    code += codeLetter;
+    var pct = Math.round((sc + 48) / 96 * 100);
+    var leftPct = first ? pct : 100 - pct;
+    html += '<div class="dim"><h3><span>' + d.a + ' ' + leftPct + '%　·　' + d.b + ' ' + (100 - leftPct) + '%</span><em style="font-style:normal;color:#9C8E80;font-weight:400">' + d.name + '</em></h3>'
+         + '<div class="track"><i class="l" style="width:' + leftPct + '%"></i><i class="r" style="width:' + (100 - leftPct) + '%"></i></div>'
+         + '<p>' + (first ? d.ea : d.eb) + '</p></div>';
+  });
+  $("code").textContent = code;
+  $("desc").textContent = T[code] || "";
+  $("dims").innerHTML = html;
+  clear();
+  show(res);
+}
+
+$("btn-start").onclick = function(){
+  answers = new Array(Q.length).fill(-1);
+  cur = 0; clear(); render(); show(quiz);
+};
+$("btn-prev").onclick = function(){
+  if(cur > 0){ cur--; save(); render(); }
+};
+$("btn-quit").onclick = function(){
+  save();
+  if(answeredCount() > 0){
+    intro.querySelector(".lead").textContent = "进度已经存下来了，随时可以接着做。";
+    $("resume-n").textContent = nextOpen() + 1;
+    $("resume-row").classList.remove("hide");
+  }
+  show(intro);
+};
+$("btn-resume").onclick = function(){
+  cur = nextOpen(); render(); show(quiz);
+};
+$("btn-reset").onclick = function(){
+  answers = new Array(Q.length).fill(-1);
+  cur = 0; clear();
+  $("resume-row").classList.add("hide");
+  $("btn-start").textContent = "开始作答";
+  show(intro);
+};
+$("btn-again").onclick = function(){
+  answers = new Array(Q.length).fill(-1);
+  cur = 0; clear(); render(); show(quiz);
+};
+$("btn-save").onclick = function(){
+  var c = $("code").textContent, d = $("desc").textContent;
+  var rows = [];
+  DIMS.forEach(function(dd){
+    var h = "";
+    document.querySelectorAll(".dim").forEach(function(el, i){ if(i === DIMS.indexOf(dd)) h = el.querySelector("h3 span").textContent + "　" + el.querySelector("p").textContent; });
+    rows.push(h);
+  });
+  var txt = "心晴计划 · 人格小测\n\n" + c + "\n" + d + "\n\n" + rows.join("\n") + "\n";
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([txt], {type:"text/plain;charset=utf-8"}));
+  a.download = "心晴计划-结果-" + c + ".txt";
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+};
+
+document.addEventListener("keydown", function(e){
+  if(quiz.classList.contains("hide")) return;
+  var k = e.key.toUpperCase();
+  var idx = ["A","B","C","D"].indexOf(k);
+  if(idx < 0 && k >= "1" && k <= "4") idx = parseInt(k, 10) - 1;
+  if(idx >= 0) pick(idx);
+  if(e.key === "ArrowLeft"){ if(cur > 0){ cur--; save(); render(); } }
+});
+
+if(load()){
+  $("resume-n").textContent = nextOpen() + 1;
+  $("resume-row").classList.remove("hide");
+  $("btn-start").textContent = "重新开始";
+}
+render();
+</script>
+</body>
+</html>
